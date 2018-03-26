@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import './config/rem'
+import './style/common.css'
 // import '../node_modules/swiper/dist/css/swiper.min.css'
 // import '../node_modules/swiper/dist/js/swiper.min.js';
 

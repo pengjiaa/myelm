@@ -2,28 +2,33 @@
   <div class="food">
       <headTop>
           <div slot='back' class="back">
-                <span class="icon iconfont icon-fanhui"></span>
-                <p>美食</p>
+                <span  class="icon iconfont icon-fanhui"></span>
+                <p>{{foodTitle}}</p>
           </div>
       </headTop>
       <div class="sort_container">
-          <div class="sort_item">
-              <div>美食</div>
-              <section class="choose_type">
+          <div class="sort_item" @click="chooseType">
+              <div v-if='foodTitleChange == false'>{{foodTitle}}</div>
+              <div v-else>分类</div>
+              <section v-show = 'show1' class="choose_type">
                   <section class="choose_type_L">
                       <ul>
-                          <li>小吃夜宵<span class="choose_type_count">123</span><span class="icon iconfont icon-unie61f"></span></li>
-                          <li class="active">小吃夜宵<span class="choose_type_count">123</span><span class="icon iconfont icon-unie61f"></span></li>
-                          <li>小吃夜宵<span class="choose_type_count">123</span><span class="icon iconfont icon-unie61f"></span></li>
-                          <li>小吃夜宵<span class="choose_type_count">123</span><span class="icon iconfont icon-unie61f"></span></li>
+                          <li v-for= '(item,index) in foodLeft' :class="{active:restaurant_category_id == item.id}" @click.stop = 'foodLeftClick(item,index)'>
+                              {{item.name}}
+                              <div>
+                                <span class="choose_type_count">{{item.count}}</span>
+                                <span class="icon iconfont icon-unie61f"></span>
+                              </div>
+                              
+                          </li>
                       </ul>
                   </section>
                   <section class="choose_type_R">
                       <ul>
-                          <li><span>小龙虾</span><span>4</span></li>
-                          <li><span>小龙虾</span><span>4</span></li>
-                          <li><span>小龙虾</span><span>4</span></li>
-                          <li><span>小龙虾</span><span>4</span></li>
+                          <li v-for = 'item in foodRight'>
+                              <span>{{item.name}}</span>
+                              <span>{{item.counts}}</span>
+                          </li>
                       </ul>
                   </section>
               </section>
@@ -59,7 +64,7 @@
               </section>
           </div>
       </div>
-          <div class="mark"></div>
+          <div class="mark" v-show='show1'></div>
       <homeList></homeList>
   </div>
 </template>
@@ -67,10 +72,48 @@
 <script>
 import headTop from '../components/header'
 import homeList from '../components/homeList'
+import {foodLeft} from '../service/getData'
 export default {
   components:{
       headTop,
       homeList
+  },
+  data(){
+      return {
+          foodTitle:'',
+          foodTitleChange:false,
+          show1:false,
+          foodLeft:'',
+          foodRight:'',
+          restaurant_category_id:''
+      }
+  },
+  created(){
+      this.initData()
+  },
+  methods:{
+      initData(){
+          this.foodTitle = this.$route.query.title
+          this.restaurant_category_id = this.$route.query.restaurant_category_id
+          //alert(this.foodTitle)
+          foodLeft().then(res=>{
+              console.log(res)
+              this.foodLeft = res.data
+              this.foodLeft.forEach((item,index)=>{
+                  if(this.restaurant_category_id == item.id){
+                      this.foodRight = item.sub_categories
+                  }
+              })
+          })
+      },
+      chooseType(){
+          this.foodTitleChange = !this.foodTitleChange
+          this.show1 = !this.show1
+      },
+      foodLeftClick(item,index){
+          this.restaurant_category_id = item.id
+          this.foodRight = this.foodLeft[index].sub_categories
+      }
   }
 }
 </script>
@@ -114,10 +157,11 @@ export default {
     margin-left: .6rem;
 }
 .choose_type {
-    width: 269%;
-    margin-top: 1rem;
+    width: 100%;
     display: flex;
-    display: none;
+    position: absolute;
+    top: 3.2rem;
+    left: 0;
 }
 .choose_type_L {
     flex: 1;
@@ -126,6 +170,9 @@ export default {
     height: 3.6rem;
     line-height: 3.6rem;
     background: #e4e4e4;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 .6rem;
 }
 .choose_type_L .active {
     background: #fff;
@@ -134,6 +181,8 @@ export default {
     background: #fff;
     flex:1;
     padding-left: .8rem;
+    height: 32.4rem;
+    overflow: auto;
 }
 .choose_type_R li{
     height: 3.5rem;
@@ -152,6 +201,7 @@ export default {
     border-radius: 30%;
     margin: 0 .4rem 0 3rem;
     color: #fff;
+    padding: 0 .3rem;
 }
 .mark {
     width: 100%;
@@ -161,7 +211,6 @@ export default {
     top: 0;
     background: rgba(0,0,0,0.3);
     z-index: 10;
-    display: none;
 }
 
 .sort_type {
@@ -187,6 +236,7 @@ export default {
     left: 0;
     top: 3.3rem;
     background: #fff;
+    display: none;
 }
 .sort_type2 p {
     height: 3rem;
@@ -220,9 +270,20 @@ export default {
     border-radius: .3rem;
 }
 .but_wrap {
-    display: flex;
+    padding:.4rem;
+    background: #f1f1f1;
 }
 .but_wrap button {
-    flex:1;
+    border:none;
+    outline: none;
+    height: 3.6rem;
+    width: 47%;
+    background: #fff;
+    border-radius: .5rem;
+    font-size: 1.8rem;
+}
+.but_wrap button:nth-child(2){
+    color: #fff;
+    background: #56d176;
 }
 </style>

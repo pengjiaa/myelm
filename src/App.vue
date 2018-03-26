@@ -11,5 +11,6 @@ export default {
 </script>
 
 <style>
- @import './style/common';
+ /* @import './style/common.css'; */
+ /* *{margin: 0;padding: 0;} */
 </style>

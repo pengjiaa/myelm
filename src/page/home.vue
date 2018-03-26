@@ -3,10 +3,10 @@
   <headTop>
     <div slot="home" class="homeTop">
       <span class="icon iconfont icon-search"></span>
-      <span class="icon iconfont icon-dingwei">上海市人民上海市人民上海市人民政府</span>
+      <span class="icon iconfont icon-dingwei">{{guessCity}}</span>
     </div>
   </headTop>
-  <homeNav></homeNav>
+  <homeNav :geohash = 'geohash'></homeNav>
   <div class="line"></div>
         <div class="store">
           
@@ -14,7 +14,7 @@
               <i>推荐商家</i>
           
       </div>
-  <homeList></homeList>
+  <homeList ></homeList>
   <footBottom></footBottom>
 </div>
 </template>
@@ -24,12 +24,29 @@ import headTop from '../components/header'
 import homeNav from '../components/homeNav'
 import homeList from '../components/homeList'
 import footBottom from '../components/footer'
+
+import {cityGuess} from '../service/getData'
+
 export default {
+  data(){
+    return {
+      guessCity:'',
+      geohash:'',
+
+    }
+  },
   components:{
     headTop,
     homeNav,
     homeList,
     footBottom
+  },
+  mounted(){
+    cityGuess().then( res => {
+      console.log(res)
+      this.guessCity = res.data.name;
+      this.geohash = res.data.latitude+','+res.data.longitude
+    })
   }
 }
 </script>
@@ -47,12 +64,13 @@ export default {
     color: #FFF;
   }
   .icon-dingwei {
-    width: 50%;
     position: absolute;
-    left: 25%;
-    top: 18%;
+    left: 50%;
+    top: 50%;
     font-size: 2rem;
     color: #FFF;
+    padding: .2rem;
+    transform: translate(-50%,-50%);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

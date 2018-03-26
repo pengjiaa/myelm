@@ -151,8 +151,23 @@
 </template>
 
 <script>
+import {shopList} from '../service/getData'
+
 export default {
-  name: 'homeList'
+  name: 'homeList',
+  data(){
+      return {
+          homeList:[]
+      }
+  },
+  created(){
+      this.initData()
+  },
+  methods:{
+      initData(){
+          shopList()
+      }
+  }
 }
 </script>
 

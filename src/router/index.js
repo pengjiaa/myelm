@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from '@/page/home'
 import Test1 from '@/page/test1'
 import Food from '@/page/food'
+import Shop from '@/page/shop'
 
 Vue.use(Router)
 
@@ -20,6 +21,10 @@ export default new Router({
     {
       path: '/food',
       component: Food
+    },
+    {
+      path: '/shop',
+      component: Shop
     }
   ]
 })
